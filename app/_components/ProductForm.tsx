@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { createProduct } from '@/app/_actions/createProduct'
 import { updateProduct } from '@/app/_actions/updateProduct'
+import { removeProduct } from '@/app/_actions/removeProduct'
 import useSWRMutation from 'swr/mutation'
 import { cn } from '@/lib/utils'
 import { Product } from '@/app/_types'
@@ -72,11 +73,18 @@ export default function ProductForm({
     onUpdate,
   )
 
-  const isMutating = isCreating || isUpdating
+  const { isMutating: isRemoving, trigger: remove } = useSWRMutation(
+    ['remove-product' as const],
+    onRemove,
+  )
 
-  const isUpdate = !Number.isNaN(productId)
+  const isMutating = isCreating || isUpdating || isRemoving
 
-  const action = isUpdate ? update : create
+  const isProduct = !Number.isNaN(productId)
+
+  const action = isProduct ? update : create
+
+  const handleRemove = async () => isProduct && (await remove(productId))
 
   return (
     <Form {...form}>
@@ -130,14 +138,26 @@ export default function ProductForm({
             </FormItem>
           )}
         />
-        <Button
-          type='submit'
-          disabled={isMutating}
-          className={cn(isMutating && 'cursor-wait')}>
-          {(isMutating && 'Loading...') || isUpdate
-            ? 'Update product'
-            : 'Create product'}
-        </Button>
+        <div className='flex flex-wrap gap-4'>
+          <Button
+            type='submit'
+            disabled={isMutating}
+            className={cn(isMutating && 'cursor-wait')}>
+            {(isMutating && 'Loading...') || isProduct
+              ? 'Update product'
+              : 'Create product'}
+          </Button>
+          {isProduct && (
+            <Button
+              type='button'
+              disabled={isMutating}
+              variant='destructive'
+              onClick={handleRemove}
+              className={cn(isRemoving && 'cursor-wait')}>
+              {(isRemoving && 'Removing...') || 'Remove product'}
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   )
@@ -165,5 +185,17 @@ async function onUpdate(
     toast('Product updated')
   } catch (error) {
     toast('Error while updating the product')
+  }
+}
+
+async function onRemove(
+  [url]: ['remove-product'],
+  { arg: productId }: { arg: Product['id'] },
+) {
+  try {
+    await removeProduct(productId)
+    toast('Product deleted')
+  } catch (error) {
+    toast('Error while deleting the product')
   }
 }
