@@ -1,3 +1,5 @@
+'use client'
+
 import {
   NavigationMenu as BaseNavigationMenu,
   NavigationMenuContent,
