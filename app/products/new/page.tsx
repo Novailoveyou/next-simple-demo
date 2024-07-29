@@ -4,7 +4,9 @@ import Main from '@/app/_sections/Main'
 import Footer from '@/app/_sections/Footer'
 import Title from '@/app/_components/Title'
 import Container from '@/app/_components/Container'
-import NewProductForm from '@/app/_components/NewProductForm'
+import NewProductForm from './_components/NewProductForm'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default async function NewProduct() {
   return (
@@ -13,7 +15,14 @@ export default async function NewProduct() {
       <Main>
         <section>
           <Container>
-            <Title>Products</Title>
+            <Title
+              button={
+                <Button asChild variant='ghost'>
+                  <Link href='/'>Back to all products</Link>
+                </Button>
+              }>
+              New Product
+            </Title>
             <NewProductForm />
           </Container>
         </section>

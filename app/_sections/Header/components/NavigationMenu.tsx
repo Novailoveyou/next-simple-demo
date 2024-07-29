@@ -10,7 +10,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from '@/components/ui/navigation-menu'
-import ThemeToggle from '@/app/_components/ThemeToggle'
+import ThemeToggle from './ThemeToggle'
 
 export default function NavigationMenu() {
   return (

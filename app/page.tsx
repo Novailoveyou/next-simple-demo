@@ -9,6 +9,8 @@ import { getProducts } from '@/app/_actions/getProducts'
 import Card from '@/app/_components/Card'
 import Title from '@/app/_components/Title'
 import Container from '@/app/_components/Container'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 /**
  * @description To revalidate data at a timed interval, you can use the `next.revalidate` option of fetch to set the cache lifetime of a resource (in seconds)
@@ -25,7 +27,14 @@ export default async function Home() {
       <Main>
         <section>
           <Container>
-            <Title>Products</Title>
+            <Title
+              button={
+                <Button variant='ghost' asChild>
+                  <Link href='/products/new'>Create new product</Link>
+                </Button>
+              }>
+              Products
+            </Title>
             <div className='grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-7 lg:grid-cols-3 lg:gap-10'>
               {products.map(product => (
                 <Card key={product.id} {...product} />

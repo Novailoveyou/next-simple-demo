@@ -66,9 +66,6 @@ export default function NewProductForm() {
 
   return (
     <Form {...form}>
-      <Button asChild variant='ghost' className='mb-5'>
-        <Link href='/'>Back to all products</Link>
-      </Button>
       {/* @ts-expect-error trigger optional second arguments conflict & not used in here so it's fine */}
       <form onSubmit={form.handleSubmit(trigger)} className='space-y-8'>
         <FormField

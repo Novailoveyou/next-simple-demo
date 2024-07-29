@@ -1,8 +1,7 @@
 import 'server-only'
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
-import ThemeToggle from '@/app/_components/ThemeToggle'
-import NavigationMenu from '@/app/_components/NavigationMenu'
+import NavigationMenu from './components/NavigationMenu'
 import Container from '@/app/_components/Container'
 import Link from 'next/link'
 
