@@ -1,5 +1,5 @@
 'use client'
-import { useForm } from 'react-hook-form'
+import { useForm, UseFormReturn } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
@@ -15,6 +15,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { createProduct } from '@/app/_actions/createProduct'
+import Link from 'next/link'
+import useSWRMutation from 'swr/mutation'
+import { cn } from '@/lib/utils'
 
 const formSchema = z.object({
   title: z
@@ -33,6 +36,19 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>
 
+const onSubmit = async (
+  [url, form]: ['create-product', UseFormReturn<FormSchema>],
+  { arg }: { arg: FormSchema },
+) => {
+  try {
+    await createProduct(arg)
+    form.reset()
+    toast('Product created')
+  } catch (error) {
+    toast('Error while creating the product')
+  }
+}
+
 export default function NewProductForm() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -43,22 +59,22 @@ export default function NewProductForm() {
     },
   })
 
-  const onSubmit = async (values: FormSchema) => {
-    try {
-      await createProduct(values)
-      form.reset()
-      toast('Product created')
-    } catch (error) {
-      toast('Error while creating the product')
-    }
-  }
+  const { isMutating, trigger } = useSWRMutation(
+    ['create-product' as const, form],
+    onSubmit,
+  )
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <Button asChild variant='ghost' className='mb-5'>
+        <Link href='/'>Back to all products</Link>
+      </Button>
+      {/* @ts-expect-error trigger optional second arguments conflict & not used in here so it's fine */}
+      <form onSubmit={form.handleSubmit(trigger)} className='space-y-8'>
         <FormField
           control={form.control}
           name='title'
+          disabled={isMutating}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
@@ -73,6 +89,7 @@ export default function NewProductForm() {
         <FormField
           control={form.control}
           name='description'
+          disabled={isMutating}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
@@ -90,6 +107,7 @@ export default function NewProductForm() {
         <FormField
           control={form.control}
           name='price'
+          disabled={isMutating}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Price</FormLabel>
@@ -101,7 +119,12 @@ export default function NewProductForm() {
             </FormItem>
           )}
         />
-        <Button type='submit'>Submit</Button>
+        <Button
+          type='submit'
+          disabled={isMutating}
+          className={cn(isMutating && 'cursor-wait')}>
+          {isMutating ? 'Loading...' : 'Create product'}
+        </Button>
       </form>
     </Form>
   )
