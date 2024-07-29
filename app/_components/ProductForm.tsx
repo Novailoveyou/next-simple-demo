@@ -21,6 +21,8 @@ import useSWRMutation from 'swr/mutation'
 import { cn } from '@/lib/utils'
 import { Product } from '@/app/_types'
 import { useRouter } from 'next/navigation'
+import AlertDialog from '@/app/_components/AlertDialog'
+import { useState } from 'react'
 
 const formSchema = z.object({
   title: z
@@ -83,7 +85,9 @@ export default function ProductForm({
     onRemove,
   )
 
-  const isMutating = isCreating || isUpdating || isRemoving
+  const isCreatingOrUpdating = isCreating || isUpdating
+
+  const isMutating = isCreatingOrUpdating || isRemoving
 
   const isProduct = !Number.isNaN(productId)
 
@@ -147,20 +151,25 @@ export default function ProductForm({
           <Button
             type='submit'
             disabled={isMutating}
-            className={cn(isMutating && 'cursor-wait')}>
-            {(isMutating && 'Loading...') || isProduct
+            className={cn(isCreatingOrUpdating && 'cursor-wait')}>
+            {(isCreatingOrUpdating && 'Loading...') || isProduct
               ? 'Update product'
               : 'Create product'}
           </Button>
           {isProduct && (
-            <Button
-              type='button'
-              disabled={isMutating}
-              variant='destructive'
-              onClick={handleRemove}
-              className={cn(isRemoving && 'cursor-wait')}>
-              {(isRemoving && 'Removing...') || 'Remove product'}
-            </Button>
+            <AlertDialog
+              actionOnClick={handleRemove}
+              description='This action cannot be undone. This will permanently delete this product'
+              trigger={
+                <Button
+                  type='button'
+                  disabled={isMutating}
+                  variant='destructive'
+                  className={cn(isRemoving && 'cursor-wait')}>
+                  {(isRemoving && 'Removing...') || 'Remove product'}
+                </Button>
+              }
+            />
           )}
         </div>
       </form>
