@@ -4,11 +4,7 @@ import { ComponentProps } from 'react'
 
 type MainProps = Pick<ComponentProps<'main'>, 'id' | 'className' | 'children'>
 
-export default function Main<Props extends MainProps>({
-  id,
-  className,
-  children,
-}: Props) {
+export default function Main({ id, className, children }: MainProps) {
   return (
     <main id={id} className={cn(className)}>
       {children}

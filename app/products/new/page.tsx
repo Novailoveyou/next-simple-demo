@@ -4,7 +4,7 @@ import Main from '@/app/_sections/Main'
 import Footer from '@/app/_sections/Footer'
 import Title from '@/app/_components/Title'
 import Container from '@/app/_components/Container'
-import NewProductForm from './_components/NewProductForm'
+import ProductForm from '@/app/_components/ProductForm'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
@@ -23,7 +23,7 @@ export default async function NewProduct() {
               }>
               New Product
             </Title>
-            <NewProductForm />
+            <ProductForm />
           </Container>
         </section>
       </Main>

@@ -15,9 +15,10 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { createProduct } from '@/app/_actions/createProduct'
-import Link from 'next/link'
+import { updateProduct } from '@/app/_actions/updateProduct'
 import useSWRMutation from 'swr/mutation'
 import { cn } from '@/lib/utils'
+import { Product } from '@/app/_types'
 
 const formSchema = z.object({
   title: z
@@ -36,38 +37,51 @@ const formSchema = z.object({
 
 export type FormSchema = z.infer<typeof formSchema>
 
-const onSubmit = async (
-  [url, form]: ['create-product', UseFormReturn<FormSchema>],
-  { arg }: { arg: FormSchema },
-) => {
-  try {
-    await createProduct(arg)
-    form.reset()
-    toast('Product created')
-  } catch (error) {
-    toast('Error while creating the product')
-  }
+type ProductFormProps = Pick<
+  Required<Parameters<typeof useForm<FormSchema>>>['0'],
+  'defaultValues'
+> & {
+  productId?: Product['id']
 }
 
-export default function NewProductForm() {
+const PRODUCT_FORM = {
+  productId: NaN,
+  defaultValues: {
+    title: '',
+    description: '',
+    price: 0,
+  },
+} as const satisfies ProductFormProps
+
+export default function ProductForm({
+  productId = PRODUCT_FORM.productId,
+  defaultValues = PRODUCT_FORM.defaultValues,
+}: ProductFormProps) {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      price: 0,
-    },
+    defaultValues,
   })
 
-  const { isMutating, trigger } = useSWRMutation(
+  const { isMutating: isCreating, trigger: create } = useSWRMutation(
     ['create-product' as const, form],
-    onSubmit,
+    onCreate,
   )
+
+  const { isMutating: isUpdating, trigger: update } = useSWRMutation(
+    ['update-product' as const, productId],
+    onUpdate,
+  )
+
+  const isMutating = isCreating || isUpdating
+
+  const isUpdate = !Number.isNaN(productId)
+
+  const action = isUpdate ? update : create
 
   return (
     <Form {...form}>
       {/* @ts-expect-error trigger optional second arguments conflict & not used in here so it's fine */}
-      <form onSubmit={form.handleSubmit(trigger)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(action)} className='space-y-8'>
         <FormField
           control={form.control}
           name='title'
@@ -120,9 +134,36 @@ export default function NewProductForm() {
           type='submit'
           disabled={isMutating}
           className={cn(isMutating && 'cursor-wait')}>
-          {isMutating ? 'Loading...' : 'Create product'}
+          {(isMutating && 'Loading...') || isUpdate
+            ? 'Update product'
+            : 'Create product'}
         </Button>
       </form>
     </Form>
   )
+}
+
+async function onCreate(
+  [url, form]: ['create-product', UseFormReturn<FormSchema>],
+  { arg }: { arg: FormSchema },
+) {
+  try {
+    await createProduct(arg)
+    form.reset()
+    toast('Product created')
+  } catch (error) {
+    toast('Error while creating the product')
+  }
+}
+
+async function onUpdate(
+  [url, id]: ['update-product', Product['id']],
+  { arg: body }: { arg: FormSchema },
+) {
+  try {
+    await updateProduct(id, body)
+    toast('Product updated')
+  } catch (error) {
+    toast('Error while updating the product')
+  }
 }

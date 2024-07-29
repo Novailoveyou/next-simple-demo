@@ -2,7 +2,6 @@
 import 'server-only'
 import { cache } from 'react'
 import axios from 'axios'
-import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { Product } from '@/app/_types'
 import toString from 'lodash/toString'
@@ -20,7 +19,6 @@ export const getProductStaticParams = cache(async () => {
       productId: id ? toString(id) : uuidv4(),
     }))
   } catch (error) {
-    toast('Error whilte fetching product params')
     return []
   }
 })

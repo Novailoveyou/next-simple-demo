@@ -7,10 +7,7 @@ import Link from 'next/link'
 
 type HeaderProps = Pick<ComponentProps<'header'>, 'id' | 'className'>
 
-export default function Header<Props extends HeaderProps>({
-  id,
-  className,
-}: Props) {
+export default function Header({ id, className }: HeaderProps) {
   return (
     <header id={id} className={cn(className, 'p-4 mb-2')}>
       <Container className='flex gap-4 justify-between'>

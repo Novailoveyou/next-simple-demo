@@ -19,7 +19,6 @@ export const getProducts = cache(
 
       return res.data
     } catch (error) {
-      toast('Error while fetching products')
       return []
     }
   },

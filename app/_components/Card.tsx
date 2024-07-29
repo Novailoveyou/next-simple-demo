@@ -37,10 +37,17 @@ export default function Card({
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardContent>
-      <CardFooter>
+      <CardFooter className='flex flex-wrap gap-4'>
         <Button asChild size='lg'>
-          <Link href={`/${id}`}>Go to product</Link>
+          <Link href={`/${id}`}>View</Link>
         </Button>
+        <Button asChild size='lg' variant='secondary'>
+          <Link href={`/${id}/edit`}>Edit</Link>
+        </Button>
+
+        {/* <Button asChild size='lg' variant='destructive'>
+          <Link href={`/${id}`}>Delete</Link>
+        </Button> */}
       </CardFooter>
     </BaseCard>
   )

@@ -36,37 +36,40 @@ const ProductPage: NextPage<ProductPageProps> = async ({
 
   if (!product) throw new Error('Product is null')
 
-  const { title, description, category, price, image, rating } = product
+  const { id, title, description, category, price, image, rating } = product
 
   return (
     <Fragment>
       <Header />
       <Main>
         <Container>
-          <div className='flex flex-col md:flex-row gap-6 items-center'>
-            <div>
-              <p className='text-xl mb-4'>{category}</p>
-              <Title>{title}</Title>
-              <p className='text-2xl max-w-[50ch]'>{description}</p>
-            </div>
-            <div className='flex flex-col gap-4 items-center'>
-              <ResponsiveImage
-                src={image}
-                alt={title}
-                width={524}
-                height={750}
-              />
-              <div className='flex flex-col gap-2'>
-                <p className='text-2xl'>Price: {price}</p>
-                <p className='text-2xl'>
-                  Rating: {rating.rate} / {rating.count}
-                </p>
+          <Title
+            className='flex-col-reverse'
+            button={
+              <div className='self-start'>
+                <Button asChild variant='ghost'>
+                  <Link href='/'>See all products</Link>
+                </Button>
+                <Button asChild variant='ghost' className='self-start'>
+                  <Link href={`/${id}/edit`}>Edit</Link>
+                </Button>
               </div>
+            }>
+            {title}
+          </Title>
+          <div className='flex flex-col md:flex-row gap-6 items-center md:items-stretch'>
+            <div className='flex flex-col gap-4'>
+              <p className='text-xl mb-4 md:text-2xl max-w-[50ch] md:mb-5'>
+                {description}
+              </p>
+              <p className='text-lg md:text-xl'>Category: {category}</p>
+              <p className='text-lg md:text-xl'>Price: {price}</p>
+              <p className='text-lg md:text-xl'>
+                Rating: {rating.rate} / {rating.count}
+              </p>
             </div>
+            <ResponsiveImage src={image} alt={title} width={524} height={750} />
           </div>
-          <Button asChild variant='secondary'>
-            <Link href='/'>Back to all products</Link>
-          </Button>
         </Container>
       </Main>
       <Footer />
