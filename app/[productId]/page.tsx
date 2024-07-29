@@ -31,14 +31,12 @@ const ProductPage: NextPage<ProductPageProps> = async ({
 }) => {
   const product = await getProduct({ productId })
 
-  if (!product) throw new Error('Product is null')
-
   return (
     <Fragment>
       <Header />
       <Main>
         <Container>
-          <Product product={product} />
+          <Product productId={Number(productId)} product={product} />
         </Container>
       </Main>
       <Footer />

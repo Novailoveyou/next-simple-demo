@@ -6,12 +6,18 @@ type ResponsiveImageProps = ComponentProps<typeof Image>
 
 export default function ResponsiveImage({
   className,
+  src,
   alt,
   ...imageProps
 }: ResponsiveImageProps) {
   return (
     <span className='inline-block max-w-max'>
-      <Image {...imageProps} alt={alt || 'Image'} className={cn(className)} />
+      <Image
+        src={src || ''}
+        {...imageProps}
+        alt={alt || 'Image'}
+        className={cn(className)}
+      />
     </span>
   )
 }

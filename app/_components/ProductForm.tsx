@@ -221,7 +221,7 @@ async function onCreate(
 ) {
   try {
     const res = await createProduct(arg)
-    _createProduct(arg)
+    _createProduct(res)
     form.reset()
     toast('Product created')
     return res

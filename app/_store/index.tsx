@@ -21,7 +21,7 @@ const reducer = (state: Products, action: Action) => {
     case 'set':
       return action.payload
     case 'create':
-      return [action.payload as unknown as Product, ...state]
+      return [...(action.payload as unknown as Product[]), ...state]
     case 'update':
       return state.map(item =>
         item.id === action.payload[0]

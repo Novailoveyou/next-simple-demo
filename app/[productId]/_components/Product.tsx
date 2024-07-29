@@ -7,18 +7,21 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatPrice } from '@/app/_utils/formatPrice'
 import { useProducts } from '@/app/_store'
+import { Product as TProduct } from '@/app/_types'
 
 type ProductProps = {
+  productId: TProduct['id']
   product: Awaited<ReturnType<typeof getProduct>>
 }
 
-export default function Product({ product }: ProductProps) {
+export default function Product({ productId, product }: ProductProps) {
   const { products } = useProducts()
 
-  if (!product) throw new Error('Product is null')
+  const _product = products.find(_product => _product.id === productId)
 
-  const _product = products.find(_product => _product.id === product.id)
+  if (!_product && !product) throw new Error('Product is null')
 
+  // @ts-expect-error TS won't understand the check above
   const { id, title, description, category, price, image, rating } =
     _product || product
 
@@ -43,11 +46,15 @@ export default function Product({ product }: ProductProps) {
           <p className='text-xl mb-4 md:text-2xl max-w-[50ch] md:mb-5'>
             {description}
           </p>
-          <p className='text-lg md:text-xl'>Category: {category}</p>
+          {category && (
+            <p className='text-lg md:text-xl'>Category: {category}</p>
+          )}
           <p className='text-lg md:text-xl'>Price: {formatPrice(price)}</p>
-          <p className='text-lg md:text-xl'>
-            Rating: {rating.rate} / {rating.count}
-          </p>
+          {rating && (
+            <p className='text-lg md:text-xl'>
+              Rating: {rating.rate} / {rating.count}
+            </p>
+          )}
         </div>
         <ResponsiveImage src={image} alt={title} width={524} height={750} />
       </div>

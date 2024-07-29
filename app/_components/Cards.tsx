@@ -15,9 +15,13 @@ export default function Cards({ products }: CardsProps) {
     }
   }, [_products, products, setProducts])
 
+  const cards = _products.length === 0 ? products : _products
+
+  console.log('cards: ', cards)
+
   return (
     <div className='grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-7 lg:grid-cols-3 lg:gap-10'>
-      {(_products.length === 0 ? products : _products).map(product => (
+      {cards.map(product => (
         <Card key={product.id} {...product} />
       ))}
     </div>

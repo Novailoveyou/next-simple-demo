@@ -40,7 +40,7 @@ const EditProductPage: NextPage<EditProductPageProps> = async ({
       <Main>
         <section>
           <Container>
-            <Product product={product} />
+            <Product productId={Number(productId)} product={product} />
           </Container>
         </section>
       </Main>

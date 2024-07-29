@@ -5,20 +5,22 @@ import Title from '@/app/_components/Title'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import ProductForm from '@/app/_components/ProductForm'
-
 import { useProducts } from '@/app/_store'
+import { Product as TProduct } from '@/app/_types'
 
 type ProductProps = {
+  productId: TProduct['id']
   product: Awaited<ReturnType<typeof getProduct>>
 }
 
-export default function Product({ product }: ProductProps) {
+export default function Product({ productId, product }: ProductProps) {
   const { products } = useProducts()
 
-  if (!product) throw new Error('Product is null')
+  const _product = products.find(_product => _product.id === productId)
 
-  const _product = products.find(_product => _product.id === product.id)
+  if (!_product && !product) throw new Error('Product is null')
 
+  // @ts-expect-error TS won't understand the check above
   const { id, title, description, price } = _product || product
 
   return (
