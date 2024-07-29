@@ -12,6 +12,7 @@ import { ONE_HOUR_IN_SECONDS } from '@/app/_constants'
 import { NextPage } from 'next'
 import { getProductStaticParams } from '@/app/_actions/getProductStaticParams'
 import { getProduct } from '@/app/_actions/getProduct'
+import Product from './_components/Product'
 
 type EditProductPageProps = {
   params: Awaited<ReturnType<typeof generateStaticParams>>[number]
@@ -33,37 +34,13 @@ const EditProductPage: NextPage<EditProductPageProps> = async ({
 }) => {
   const product = await getProduct({ productId })
 
-  if (!product) throw new Error('Product is null')
-
-  const { id, title, description, price } = product
-
   return (
     <>
       <Header />
       <Main>
         <section>
           <Container>
-            <Title
-              button={
-                <div className='flex gap-3 items-center'>
-                  <Button asChild variant='ghost'>
-                    <Link href={`/${id}`}>View this product</Link>
-                  </Button>
-                  <Button asChild variant='ghost'>
-                    <Link href='/'>View all products</Link>
-                  </Button>
-                </div>
-              }>
-              Edit Product
-            </Title>
-            <ProductForm
-              productId={id}
-              defaultValues={{
-                title,
-                description,
-                price,
-              }}
-            />
+            <Product product={product} />
           </Container>
         </section>
       </Main>

@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation'
 import AlertDialog from '@/app/_components/AlertDialog'
 import { getProduct } from '@/app/_actions/getProduct'
 import toString from 'lodash/toString'
+import { useProducts } from '@/app/_store'
 
 const formSchema = z.object({
   title: z
@@ -63,6 +64,7 @@ export default function ProductForm({
   productId = PRODUCT_FORM.productId,
   defaultValues = PRODUCT_FORM.defaultValues,
 }: ProductFormProps) {
+  const { createProduct, updateProduct, removeProduct } = useProducts()
   const { replace } = useRouter()
 
   const routeToHome = () => replace('/')
@@ -92,17 +94,17 @@ export default function ProductForm({
   })
 
   const { isMutating: isCreating, trigger: create } = useSWRMutation(
-    ['create-product' as const, form],
+    ['create-product' as const, form, createProduct],
     onCreate,
   )
 
   const { isMutating: isUpdating, trigger: update } = useSWRMutation(
-    ['update-product' as const, productId],
+    ['update-product' as const, productId, updateProduct],
     onUpdate,
   )
 
   const { isMutating: isRemoving, trigger: remove } = useSWRMutation(
-    ['remove-product' as const, form, routeToHome],
+    ['remove-product' as const, form, routeToHome, removeProduct],
     onRemove,
   )
 
@@ -211,43 +213,58 @@ async function onView([url, productId]: [
 }
 
 async function onCreate(
-  [url, form]: ['create-product', UseFormReturn<FormSchema>],
+  [url, form, _createProduct]: [
+    'create-product',
+    UseFormReturn<FormSchema>,
+    ReturnType<typeof useProducts>['createProduct'],
+  ],
   { arg }: { arg: FormSchema },
 ) {
   try {
-    await createProduct(arg)
+    const res = await createProduct(arg)
+    _createProduct(arg)
     form.reset()
     toast('Product created')
+    return res
   } catch (error) {
     toast('Error while creating the product')
   }
 }
 
 async function onUpdate(
-  [url, id]: ['update-product', Product['id']],
+  [url, id, _updateProduct]: [
+    'update-product',
+    Product['id'],
+    ReturnType<typeof useProducts>['updateProduct'],
+  ],
   { arg: body }: { arg: FormSchema },
 ) {
   try {
-    await updateProduct(id, body)
+    const res = await updateProduct(id, body)
+    _updateProduct(id, body)
     toast('Product updated')
+    return res
   } catch (error) {
     toast('Error while updating the product')
   }
 }
 
 async function onRemove(
-  [url, form, routeToHome]: [
+  [url, form, routeToHome, _removeProduct]: [
     'remove-product',
     UseFormReturn<FormSchema>,
     () => void,
+    ReturnType<typeof useProducts>['removeProduct'],
   ],
   { arg: productId }: { arg: Product['id'] },
 ) {
   try {
-    await removeProduct(productId)
+    const res = await removeProduct(productId)
+    _removeProduct(productId)
     form.reset()
     toast('Product deleted')
     routeToHome()
+    return res
   } catch (error) {
     toast('Error while deleting the product')
   }

@@ -14,7 +14,7 @@ export const updateProduct = cache(
     id: Product['id'],
     body: Pick<Product, 'title' | 'description' | 'price'>,
   ) => {
-    console.log('updateProduct')
+    ;('updateProduct')
     try {
       const res = await axios.put(`${PRODUCT_API_BASE}/products/${id}`, body)
       return res.data
