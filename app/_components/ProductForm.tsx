@@ -20,6 +20,7 @@ import { removeProduct } from '@/app/_actions/removeProduct'
 import useSWRMutation from 'swr/mutation'
 import { cn } from '@/lib/utils'
 import { Product } from '@/app/_types'
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
   title: z
@@ -58,6 +59,8 @@ export default function ProductForm({
   productId = PRODUCT_FORM.productId,
   defaultValues = PRODUCT_FORM.defaultValues,
 }: ProductFormProps) {
+  const { replace } = useRouter()
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -73,8 +76,10 @@ export default function ProductForm({
     onUpdate,
   )
 
+  const routeToHome = () => replace('/')
+
   const { isMutating: isRemoving, trigger: remove } = useSWRMutation(
-    ['remove-product' as const],
+    ['remove-product' as const, form, routeToHome],
     onRemove,
   )
 
@@ -189,12 +194,18 @@ async function onUpdate(
 }
 
 async function onRemove(
-  [url]: ['remove-product'],
+  [url, form, routeToHome]: [
+    'remove-product',
+    UseFormReturn<FormSchema>,
+    () => void,
+  ],
   { arg: productId }: { arg: Product['id'] },
 ) {
   try {
     await removeProduct(productId)
+    form.reset()
     toast('Product deleted')
+    routeToHome()
   } catch (error) {
     toast('Error while deleting the product')
   }

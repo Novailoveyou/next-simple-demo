@@ -46,9 +46,9 @@ const ProductPage: NextPage<ProductPageProps> = async ({
           <Title
             className='flex-col-reverse'
             button={
-              <div className='self-start'>
+              <div className='flex self-start gap-3 items-center'>
                 <Button asChild variant='ghost'>
-                  <Link href='/'>See all products</Link>
+                  <Link href='/'>View all products</Link>
                 </Button>
                 <Button asChild variant='ghost' className='self-start'>
                   <Link href={`/${id}/edit`}>Edit</Link>

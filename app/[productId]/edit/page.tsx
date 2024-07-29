@@ -45,9 +45,14 @@ const EditProductPage: NextPage<EditProductPageProps> = async ({
           <Container>
             <Title
               button={
-                <Button asChild variant='ghost'>
-                  <Link href='/'>Back to all products</Link>
-                </Button>
+                <div className='flex gap-3 items-center'>
+                  <Button asChild variant='ghost'>
+                    <Link href={`/${id}`}>View this product</Link>
+                  </Button>
+                  <Button asChild variant='ghost'>
+                    <Link href='/'>View all products</Link>
+                  </Button>
+                </div>
               }>
               Edit Product
             </Title>

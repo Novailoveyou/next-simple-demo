@@ -18,7 +18,7 @@ export default async function NewProduct() {
             <Title
               button={
                 <Button asChild variant='ghost'>
-                  <Link href='/'>Back to all products</Link>
+                  <Link href='/'>View all products</Link>
                 </Button>
               }>
               New Product
