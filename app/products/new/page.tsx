@@ -1,10 +1,24 @@
 import 'server-only'
-import Image from 'next/image'
+import Header from '@/app/_sections/Header'
+import Main from '@/app/_sections/Main'
+import Footer from '@/app/_sections/Footer'
+import Title from '@/app/_components/Title'
+import Container from '@/app/_components/Container'
+import NewProductForm from '@/app/_components/NewProductForm'
 
-export default function Home() {
+export default async function NewProduct() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      new product
-    </main>
+    <>
+      <Header />
+      <Main>
+        <section>
+          <Container>
+            <Title>Products</Title>
+            <NewProductForm />
+          </Container>
+        </section>
+      </Main>
+      <Footer />
+    </>
   )
 }

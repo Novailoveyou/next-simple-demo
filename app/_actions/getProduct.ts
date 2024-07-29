@@ -1,3 +1,4 @@
+'use server'
 import 'server-only'
 import { cache } from 'react'
 import axios from 'axios'
@@ -21,9 +22,12 @@ export const getProduct = cache(
   }) => {
     try {
       if (!productId) throw new Error()
-      return (
-        await axios.get<Product>(`${PRODUCT_API_BASE}/products/${productId}`)
-      ).data
+
+      const res = await axios.get<Product>(
+        `${PRODUCT_API_BASE}/products/${productId}`,
+      )
+
+      return res.data
     } catch (error) {
       toast('Error while fetching the product')
       return null

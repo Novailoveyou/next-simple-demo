@@ -1,3 +1,4 @@
+'use server'
 import 'server-only'
 import { cache } from 'react'
 import axios from 'axios'
@@ -12,11 +13,11 @@ import { PRODUCT_API_BASE } from '@/app/_constants'
 export const getProducts = cache(
   async (params: { limit?: number; sort?: number }) => {
     try {
-      return (
-        await axios.get<Product[]>(`${PRODUCT_API_BASE}/products`, {
-          params,
-        })
-      ).data
+      const res = await axios.get<Product[]>(`${PRODUCT_API_BASE}/products`, {
+        params,
+      })
+
+      return res.data
     } catch (error) {
       toast('Error while fetching products')
       return []
