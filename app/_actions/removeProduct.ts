@@ -10,6 +10,7 @@ import { PRODUCT_API_BASE } from '@/app/_constants'
  * @see https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
  */
 export const removeProduct = cache(async (id: Product['id']) => {
+  console.log('removeProduct')
   try {
     const res = await axios.delete(`${PRODUCT_API_BASE}/products/${id}`)
     return res.data

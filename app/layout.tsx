@@ -5,6 +5,7 @@ import './globals.css'
 import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
+import SWRProvider from '@/components/swr-provider'
 
 const fontSans = FontSans({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -21,14 +22,16 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={cn(fontSans.variable, fontSans.className)}>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange>
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <SWRProvider>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </SWRProvider>
       </body>
     </html>
   )

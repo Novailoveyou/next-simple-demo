@@ -18,11 +18,13 @@ import { createProduct } from '@/app/_actions/createProduct'
 import { updateProduct } from '@/app/_actions/updateProduct'
 import { removeProduct } from '@/app/_actions/removeProduct'
 import useSWRMutation from 'swr/mutation'
+import useSWR from 'swr'
 import { cn } from '@/lib/utils'
 import { Product } from '@/app/_types'
 import { useRouter } from 'next/navigation'
 import AlertDialog from '@/app/_components/AlertDialog'
-import { useState } from 'react'
+import { getProduct } from '@/app/_actions/getProduct'
+import toString from 'lodash/toString'
 
 const formSchema = z.object({
   title: z
@@ -63,9 +65,30 @@ export default function ProductForm({
 }: ProductFormProps) {
   const { replace } = useRouter()
 
+  const routeToHome = () => replace('/')
+
+  const isProduct = !Number.isNaN(productId)
+
+  const {
+    data: product,
+    error,
+    isLoading,
+  } = useSWR(
+    isProduct ? ['view-product' as const, toString(productId)] : null,
+    onView,
+  )
+
+  const _defaultValues = product
+    ? {
+        title: product.title,
+        description: product.description,
+        price: product.price,
+      }
+    : defaultValues
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: _defaultValues,
   })
 
   const { isMutating: isCreating, trigger: create } = useSWRMutation(
@@ -78,8 +101,6 @@ export default function ProductForm({
     onUpdate,
   )
 
-  const routeToHome = () => replace('/')
-
   const { isMutating: isRemoving, trigger: remove } = useSWRMutation(
     ['remove-product' as const, form, routeToHome],
     onRemove,
@@ -87,13 +108,13 @@ export default function ProductForm({
 
   const isCreatingOrUpdating = isCreating || isUpdating
 
-  const isMutating = isCreatingOrUpdating || isRemoving
-
-  const isProduct = !Number.isNaN(productId)
+  const isMutating = isLoading || isCreatingOrUpdating || isRemoving
 
   const action = isProduct ? update : create
 
   const handleRemove = async () => isProduct && (await remove(productId))
+
+  if (error) routeToHome()
 
   return (
     <Form {...form}>
@@ -175,6 +196,18 @@ export default function ProductForm({
       </form>
     </Form>
   )
+}
+
+async function onView([url, productId]: [
+  'view-product',
+  Parameters<typeof getProduct>['0']['productId'],
+]) {
+  try {
+    const res = await getProduct({ productId })
+    return res
+  } catch (error) {
+    toast('Error while fetching the product')
+  }
 }
 
 async function onCreate(

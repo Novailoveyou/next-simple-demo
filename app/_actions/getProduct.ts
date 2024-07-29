@@ -18,6 +18,7 @@ export const getProduct = cache(
       ReturnType<typeof getProductStaticParams>
     >[number]['productId']
   }) => {
+    console.log('getProduct')
     try {
       if (!productId) throw new Error()
 

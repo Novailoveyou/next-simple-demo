@@ -11,6 +11,7 @@ import { PRODUCT_API_BASE } from '@/app/_constants'
  */
 export const createProduct = cache(
   async (body: Pick<Product, 'title' | 'description' | 'price'>) => {
+    console.log('createProduct')
     try {
       const res = await axios.post(`${PRODUCT_API_BASE}/products`, body)
       return res.data
