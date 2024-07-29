@@ -64,21 +64,20 @@ export default function ProductForm({
   productId = PRODUCT_FORM.productId,
   defaultValues = PRODUCT_FORM.defaultValues,
 }: ProductFormProps) {
-  const { createProduct, updateProduct, removeProduct } = useProducts()
+  const { products, createProduct, updateProduct, removeProduct } =
+    useProducts()
   const { replace } = useRouter()
 
   const routeToHome = () => replace('/')
 
   const isProduct = !Number.isNaN(productId)
 
-  const {
-    data: product,
-    error,
-    isLoading,
-  } = useSWR(
+  const { data, error, isLoading } = useSWR(
     isProduct ? ['view-product' as const, toString(productId)] : null,
     onView,
   )
+
+  const product = products.find(product => product.id === productId) || data
 
   const _defaultValues = product
     ? {

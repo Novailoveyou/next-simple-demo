@@ -10,8 +10,10 @@ export default function Cards({ products }: CardsProps) {
   const { products: _products, setProducts } = useProducts()
 
   useEffect(() => {
-    setProducts(products)
-  }, [products, setProducts])
+    if (!_products || _products.length === 0) {
+      setProducts(products)
+    }
+  }, [_products, products, setProducts])
 
   return (
     <div className='grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-7 lg:grid-cols-3 lg:gap-10'>
