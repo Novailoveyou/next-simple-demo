@@ -10,18 +10,11 @@ import { getProducts } from '@/app/_actions/getProducts'
 import Link from 'next/link'
 import ResponsiveImage from './ResponsiveImage'
 import { Button } from '@/components/ui/button'
+import { formatPrice } from '@/app/_utils/formatPrice'
 
 type CardProps = Awaited<ReturnType<typeof getProducts>>[number]
 
-export default function Card({
-  id,
-  title,
-  description,
-  category,
-  price,
-  image,
-  rating,
-}: CardProps) {
+export default function Card({ id, title, price, image }: CardProps) {
   return (
     <BaseCard className='flex flex-col justify-between items-center p-6 gap-4'>
       <CardHeader>
@@ -35,7 +28,9 @@ export default function Card({
       </CardHeader>
       <CardContent className='flex flex-col gap-4'>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className='text-xl'>
+          {formatPrice(price)}
+        </CardDescription>
       </CardContent>
       <CardFooter className='flex flex-wrap gap-4'>
         <Button asChild size='lg'>

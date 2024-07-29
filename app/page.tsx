@@ -19,7 +19,7 @@ import Link from 'next/link'
 export const revalidate: Revalidate = ONE_HOUR_IN_SECONDS
 
 export default async function Home() {
-  const products = await getProducts({ limit: 16 })
+  const products = await getProducts()
 
   return (
     <>

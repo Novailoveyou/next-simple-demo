@@ -13,6 +13,7 @@ import Title from '@/app/_components/Title'
 import ResponsiveImage from '../_components/ResponsiveImage'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { formatPrice } from '@/app/_utils/formatPrice'
 
 type ProductPageProps = {
   params: Awaited<ReturnType<typeof generateStaticParams>>[number]
@@ -63,7 +64,7 @@ const ProductPage: NextPage<ProductPageProps> = async ({
                 {description}
               </p>
               <p className='text-lg md:text-xl'>Category: {category}</p>
-              <p className='text-lg md:text-xl'>Price: {price}</p>
+              <p className='text-lg md:text-xl'>Price: {formatPrice(price)}</p>
               <p className='text-lg md:text-xl'>
                 Rating: {rating.rate} / {rating.count}
               </p>

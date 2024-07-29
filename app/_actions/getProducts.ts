@@ -11,7 +11,7 @@ import { PRODUCT_API_BASE } from '@/app/_constants'
  * @see https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
  */
 export const getProducts = cache(
-  async (params: { limit?: number; sort?: number }) => {
+  async (params: { limit?: number; sort?: number } = { limit: 16 }) => {
     try {
       const res = await axios.get<Product[]>(`${PRODUCT_API_BASE}/products`, {
         params,
