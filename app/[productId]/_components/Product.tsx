@@ -17,13 +17,12 @@ type ProductProps = {
 export default function Product({ productId, product }: ProductProps) {
   const { products } = useProducts()
 
-  const _product = products.find(_product => _product.id === productId)
+  const _product =
+    products.find(_product => _product.id === productId) || product
 
-  if (!_product && !product) throw new Error('Product is null')
+  if (!_product) return <></>
 
-  // @ts-expect-error TS won't understand the check above
-  const { id, title, description, category, price, image, rating } =
-    _product || product
+  const { id, title, description, category, price, image, rating } = _product
 
   return (
     <>
