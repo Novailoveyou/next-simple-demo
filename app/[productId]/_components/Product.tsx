@@ -67,10 +67,6 @@ export default function Product({ productId, product }: ProductProps) {
                 {rating.count} reviews
               </span>
             </div>
-
-            // <p className='text-lg md:text-xl'>
-            //   Rating: {rating.rate} / {rating.count}
-            // </p>
           )}
         </div>
         <ResponsiveImage src={image} alt={title} width={524} height={750} />
